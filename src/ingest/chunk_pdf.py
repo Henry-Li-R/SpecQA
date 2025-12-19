@@ -14,6 +14,7 @@ DOC_ID = "acuvim_3_datasheet"
 MIN_CHARS = 60
 CHUNK_CHARS = 500
 OVERLAP_CHARS = 75
+DEBUG_DIAGRAM_HEURISTIC = False
 
 HEADING_ALLOWLIST = {
     "DESCRIPTION","FEATURES","KEY FEATURES","APPLICATIONS","SPECIFICATIONS",
@@ -66,11 +67,12 @@ def page_is_diagram_heavy(page, text: str) -> bool:
     low_text = text_ratio < 0.12 and word_count < 200
     heavy_graphics = drawing_count >= 400
 
-    print(f"Page {page.number + 1}: text_ratio={text_ratio:.3f}, "
-          f"word_count={word_count}, text_blocks={text_blocks}, "
-          f"drawing_count={drawing_count} => diagram={low_text and heavy_graphics}")
-
-    return low_text and heavy_graphics
+    is_diagram = low_text and heavy_graphics
+    if DEBUG_DIAGRAM_HEURISTIC:
+        print(f"Page {page.number + 1}: text_ratio={text_ratio:.3f}, "
+              f"word_count={word_count}, text_blocks={text_blocks}, "
+              f"drawing_count={drawing_count} => diagram={is_diagram}")
+    return is_diagram
 
 def extract_chunks(pdf_path: Path):
     doc = fitz.open(pdf_path)
@@ -82,24 +84,10 @@ def extract_chunks(pdf_path: Path):
         lines = [normalize_text_line(l) for l in raw.splitlines()]
         lines = [l for l in lines if l]  # drop blanks
 
-        # Optional: export diagram-heavy pages as images (dimensions/wiring)
+        # Skip diagram-heavy pages.
         diagram = page_is_diagram_heavy(doc[page_idx], raw)
 
         if diagram:
-            img_path = OUT_DIR / f"{DOC_ID}_p{page_num:02d}.png"
-            # render at higher resolution for later OCR/vision if needed
-            pix = doc[page_idx].get_pixmap(dpi=200)
-            pix.save(img_path.as_posix())
-
-            chunks.append({
-                "chunk_id": f"{DOC_ID}:p{page_num}:diagram",
-                "doc_id": DOC_ID,
-                "page": page_num,
-                "type": "diagram_page",
-                "section": "DIAGRAM",
-                "text": "\n".join(lines[:200]),   # keep labels as a tiny caption
-                "image_path": img_path.as_posix()
-            })
             continue
 
         # Text pages: split by headings
@@ -125,7 +113,6 @@ def extract_chunks(pdf_path: Path):
                     "chunk_id": f"{DOC_ID}:p{page_num}:{slugify_section(current_section)}:{len(chunks)}",
                     "doc_id": DOC_ID,
                     "page": page_num,
-                    "type": "text",
                     "section": current_section,
                     "text": part
                 })
