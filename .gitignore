@@ -13,4 +13,4 @@ __pycache__/
 .vscode/
 
 # data/artifacts
-raw_docs/
+docs_raw/
