@@ -20,9 +20,11 @@ MODEL_NAME = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_NAME = "BAAI/bge-reranker-base"
 HYBRID_LIMIT = 20
 RERANK_TOP_K = 20
-RERANK_ENABLED = True
+RERANK_ENABLED = False
 
 ALPHA = 0.6
+
+print(f"Rerank enabled: {RERANK_ENABLED}")
 
 def connect_client() -> weaviate.WeaviateClient:
     parsed = urlparse(WEAVIATE_URL)
@@ -85,13 +87,14 @@ def main() -> None:
             vector=vector,
             alpha=ALPHA,
             limit=HYBRID_LIMIT,
-            return_properties=["chunk_id", "text"],
+            query_properties=["search_text"],
+            return_properties=["chunk_id", "text", "search_text"],
         )
 
         objects = result.objects
         if RERANK_ENABLED and reranker is not None:
             candidates = objects[:RERANK_TOP_K]
-            rerank_pairs = [(query, obj.properties.get("text", "")) for obj in candidates]
+            rerank_pairs = [(query, obj.properties.get("search_text", "")) for obj in candidates]
             scores = reranker.predict(rerank_pairs)
             ranked = [
                 obj

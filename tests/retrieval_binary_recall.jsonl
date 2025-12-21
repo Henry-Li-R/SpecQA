@@ -1,10 +1,10 @@
-{"qid":"q01","query":"What communication protocols does Acuvim 3 support?","gold_chunk_ids":["acuvim_3_datasheet:p1:features:2"]}
+{"qid":"q01","query":"What communication protocols does Acuvim 3 support?","gold_chunk_ids":["acuvim_3_datasheet:p1:features:3"]}
 {"qid":"q02","query":"What is the voltage measurement range?","gold_chunk_ids":["acuvim_3_datasheet:p3:specifications:14"]}
 {"qid":"q03","query":"What is the voltage accuracy?","gold_chunk_ids":["acuvim_3_datasheet:p3:specifications:14"]}
 {"qid":"q04","query":"What is the current measurement accuracy?","gold_chunk_ids":["acuvim_3_datasheet:p3:specifications:14"]}
 {"qid":"q05","query":"What is the update rate for voltage measurements?","gold_chunk_ids":["acuvim_3_datasheet:p3:specifications:14"]}
 {"qid":"q06","query":"Which electrical power quantities (active, reactive, apparent) are specified as measurable by the device in the specifications table?","gold_chunk_ids":["acuvim_3_datasheet:p3:specifications:14"]}
-{"qid":"q07","query":"applications of Acuvim 3","gold_chunk_ids":["acuvim_3_datasheet:p2:applications:13"]}
+{"qid":"q07","query":"What deployment or use-case contexts is Acuvim 3 intended for (i.e., where it is used)?","gold_chunk_ids":["acuvim_3_datasheet:p2:applications:13"]}
 {"qid":"q08","query":"Does Acuvim 3 act as a synchrophasor (PMU) data producer and support broadcast/multicast transmission over TCP/IP?","gold_chunk_ids":["acuvim_3_datasheet:p2:key_features:11"]}
 {"qid":"q09","query":"For the optional analog input channel (the one that accepts voltage/current signals), what dielectric isolation rating is specified for that input?","gold_chunk_ids":["acuvim_3_datasheet:p4:specifications:20"]}
 {"qid":"q10","query":"What ingress protection rating is provided?","gold_chunk_ids":["acuvim_3_datasheet:p4:specifications:25"]}
