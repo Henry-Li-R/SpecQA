@@ -10,12 +10,12 @@ REPO_ROOT = Path(__file__).resolve().parents[1]
 QUERIES_PATH = Path(
     os.environ.get(
         "RECALL_QUERIES_PATH",
-        (REPO_ROOT / "tests/retrieval_binary_recall.jsonl").as_posix(),
+        (REPO_ROOT / "tests/retrieval_binary_recall_datasheet.jsonl").as_posix(),
     )
 )
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL", "http://localhost:8080")
 WEAVIATE_GRPC_PORT = int(os.environ.get("WEAVIATE_GRPC_PORT", "50051"))
-CLASS_NAME = "DocChunk"
+CLASS_NAME = "DocChunkDatasheet"
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_NAME = "BAAI/bge-reranker-base"
 HYBRID_LIMIT = 20

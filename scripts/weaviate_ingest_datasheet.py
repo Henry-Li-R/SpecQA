@@ -17,7 +17,7 @@ CHUNKS_PATH = Path(
         (REPO_ROOT / "src/ingest/data/chunks/acuvim_3_datasheet_chunks.jsonl").as_posix(),
     )
 )
-CLASS_NAME = "DocChunk"
+CLASS_NAME = "DocChunkDatasheet"
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
 
@@ -99,6 +99,7 @@ def main() -> None:
                 )
     finally:
         client.close()
+    print(f"Ingested datasheet chunks into {CLASS_NAME} from {CHUNKS_PATH}")
 
 
 if __name__ == "__main__":
