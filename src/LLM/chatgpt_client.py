@@ -1,5 +1,6 @@
 import json
 import os
+import re
 from enum import Enum
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
@@ -98,6 +99,9 @@ def validate_citations(
         return False, ["citations must be a list"]
 
     chunk_text_by_id = {c.get("chunk_id"): c.get("text", "") for c in retrieved_chunks}
+    normalized_chunk_text_by_id = {
+        k: re.sub(r"\s+", " ", v).strip() for k, v in chunk_text_by_id.items()
+    }
 
     for idx, citation in enumerate(citations, start=1):
         chunk_id = citation.get("chunk_id")
@@ -105,7 +109,13 @@ def validate_citations(
         if not chunk_id or chunk_id not in chunk_text_by_id:
             errors.append(f"citation {idx} has unknown chunk_id")
             continue
-        if not quote or quote not in chunk_text_by_id.get(chunk_id, ""):
+        if not quote:
+            errors.append(f"citation {idx} quote not found in chunk")
+            continue
+        if quote in chunk_text_by_id.get(chunk_id, ""):
+            continue
+        normalized_quote = re.sub(r"\s+", " ", quote).strip()
+        if normalized_quote not in normalized_chunk_text_by_id.get(chunk_id, ""):
             errors.append(f"citation {idx} quote not found in chunk")
 
     return len(errors) == 0, errors
@@ -114,7 +124,7 @@ def validate_citations(
 def normalize_answer(
     answer_json: Dict[str, Any],
     retrieved_chunks: List[Dict[str, Any]],
-    on_invalid: str = "abstain",
+    abstain_on_invalid: bool = True,
 ) -> Dict[str, Any]:
     normalized = {
         "answer": answer_json.get("answer", ""),
@@ -129,7 +139,7 @@ def normalize_answer(
     if ok:
         return normalized
 
-    if on_invalid == "abstain":
+    if abstain_on_invalid:
         return {
             "answer": "",
             "citations": [],
@@ -148,7 +158,7 @@ def answer_with_citations(
     system_prompt: Optional[str] = None,
     model: str = "gpt-4o-2024-08-06",
     temperature: float = 0.0,
-    on_invalid: str = "abstain",
+    abstain_on_invalid: bool = True,
     api_key: Optional[str] = None,
 ) -> Dict[str, Any]:
     key = api_key or os.environ.get("OPENAI_API_KEY", "")
@@ -169,4 +179,8 @@ def answer_with_citations(
         api_key=key,
     )
     answer_json = parsed.model_dump()
-    return normalize_answer(answer_json, retrieved_chunks, on_invalid=on_invalid)
+    return normalize_answer(
+        answer_json,
+        retrieved_chunks,
+        abstain_on_invalid=abstain_on_invalid,
+    )

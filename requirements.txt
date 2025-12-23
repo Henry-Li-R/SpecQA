@@ -3,3 +3,6 @@ weaviate-client
 sentence-transformers
 openai
 pydantic
+arize-phoenix
+arize-phoenix-otel
+openinference-instrumentation-openai

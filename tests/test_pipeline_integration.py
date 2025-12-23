@@ -1,5 +1,6 @@
 import os
 import unittest
+import warnings
 
 from src.pipeline import run_pipeline as rp
 
@@ -23,6 +24,7 @@ class TestPipelineIntegration(unittest.TestCase):
         result = rp.run_pipeline(
             "What is the voltage measurement range?",
             api_key=api_key,
+            abstain_on_invalid=False,
         )
 
         self.assertIsInstance(result, dict)
@@ -32,6 +34,8 @@ class TestPipelineIntegration(unittest.TestCase):
         if result.get("abstain") is False:
             self.assertTrue(result.get("answer"))
             self.assertTrue(result.get("citations"))
+        if result.get("abstain_reason") == "invalid_citations":
+            print("Validation errors:", result.get("validation_errors"))
 
         print("Pipeline result:", result)
 
