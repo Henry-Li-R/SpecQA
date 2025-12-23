@@ -1,4 +1,5 @@
 pymupdf
 weaviate-client
 sentence-transformers
-gmft
+openai
+pydantic
