@@ -6,6 +6,7 @@ from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from openai import OpenAI
 from pydantic import BaseModel
+from dotenv import load_dotenv
 class Confidence(str, Enum):
     high = "high"
     medium = "medium"
@@ -75,6 +76,7 @@ def send_chatgpt_request(
     api_key: Optional[str] = None,
     temperature: float = 0.0,
 ) -> AnswerOutput:
+    load_dotenv()
     key = api_key or os.environ.get("OPENAI_API_KEY", "")
     if not key:
         raise ValueError("Missing OPENAI_API_KEY or api_key argument.")
@@ -161,6 +163,7 @@ def answer_with_citations(
     abstain_on_invalid: bool = True,
     api_key: Optional[str] = None,
 ) -> Dict[str, Any]:
+    load_dotenv()
     key = api_key or os.environ.get("OPENAI_API_KEY", "")
     if not key:
         raise ValueError("Missing OPENAI_API_KEY or api_key argument.")

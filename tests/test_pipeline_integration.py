@@ -2,22 +2,15 @@ import os
 import unittest
 import warnings
 
+from dotenv import load_dotenv
+
 from src.pipeline import run_pipeline as rp
 
 
 class TestPipelineIntegration(unittest.TestCase):
     def _load_env_key(self) -> str:
-        key = os.environ.get("OPENAI_API_KEY", "")
-        if key:
-            return key
-        env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
-        if not os.path.exists(env_path):
-            return ""
-        with open(env_path, "r", encoding="utf-8") as f:
-            for line in f:
-                if line.startswith("OPENAI_API_KEY="):
-                    return line.split("=", 1)[1].strip()
-        return ""
+        load_dotenv()
+        return os.environ.get("OPENAI_API_KEY", "")
 
     def test_pipeline_end_to_end(self):
         api_key = self._load_env_key()

@@ -1,0 +1,10 @@
+{"qid":"g01","query":"What is the voltage measurement range (VLN and VLL) in the specifications?","gold_citations":["acuvim_3_datasheet:p3:specifications:14"],"gold_answer_keywords":["VLN","10V~400V","VLL","17.3V~690V"],"must_abstain":false}
+{"qid":"g02","query":"Which communication protocols are supported?","gold_citations":["acuvim_3_datasheet:p1:features:2","acuvim_3_datasheet:p1:features:3"],"gold_answer_keywords":["IEC 61850","Modbus-RTU","Modbus-TCP/IP","BACnet-IP","DNP3","SNMP"],"must_abstain":false}
+{"qid":"g03","query":"What time synchronization methods are listed?","gold_citations":["acuvim_3_datasheet:p1:features:2"],"gold_answer_keywords":["IRIG-B","NTP","SNTP","PTP"],"must_abstain":false}
+{"qid":"g04","query":"What is the AC(P1) control power operating range?","gold_citations":["acuvim_3_datasheet:p4:specifications:22"],"gold_answer_keywords":["AC(P1)","100~415Vac","50/60Hz","100~300Vdc"],"must_abstain":false}
+{"qid":"g05","query":"Which IEC/UL safety standards (with years) are explicitly referenced in the overview?","gold_citations":["acuvim_3_manual:p10:chapter_1_introduction:1_1_acuvim_3_overview:67"],"gold_answer_keywords":["IEC/UL 61010-1:2010","IEC/UL 61010-2-030:2010"],"must_abstain":false}
+{"qid":"g06","query":"What TOU capabilities are stated (tariff count, assignment interval, billing period retention)?","gold_citations":["acuvim_3_manual:p11:chapter_1_introduction:1_1_1_revenue_grade_energy_measurement:71"],"gold_answer_keywords":["8 tariff","30-minute","12 previous billing"],"must_abstain":false}
+{"qid":"g07","query":"What is the warranty period for Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g08","query":"Is the Acuvim 3 compatible with Schneider PowerLogic meters?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g09","query":"What is the retail price of the Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g10","query":"Which Modbus register map addresses 40001-40010?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}

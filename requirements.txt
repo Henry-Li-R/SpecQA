@@ -4,5 +4,6 @@ sentence-transformers
 openai
 pydantic
 arize-phoenix
+python-dotenv
 arize-phoenix-otel
 openinference-instrumentation-openai
