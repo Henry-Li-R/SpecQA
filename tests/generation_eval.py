@@ -100,7 +100,19 @@ def main() -> None:
 
         if args.print_details:
             qid = item.get("qid", "")
-            print(f"{qid}: abstain={abstained} citations={len(result.get('citations', []))}")
+            cited_ids = [c.get("chunk_id") for c in result.get("citations", [])]
+            errors = result.get("validation_errors", [])
+            gold_hit = bool(gold_citations and set(cited_ids).intersection(gold_citations))
+            print(
+                f"{qid}: abstain={abstained} citations={len(cited_ids)} "
+                f"gold_hit={gold_hit} quote_valid={not errors}"
+            )
+            if gold_citations:
+                print(f"  gold: {sorted(gold_citations)}")
+            if cited_ids:
+                print(f"  cited: {cited_ids}")
+            if errors:
+                print(f"  validation_errors: {errors}")
 
     citation_quote_valid_rate = citation_valid / answered if answered else 0.0
     citation_in_gold_rate = citation_in_gold / answered if answered else 0.0

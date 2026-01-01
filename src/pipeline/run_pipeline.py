@@ -37,8 +37,7 @@ def setup_tracing():
     provider = register(
         project_name=PHOENIX_PROJECT_NAME,
         endpoint=endpoint,
-        auto_instrument=True,
-        batch=False, # Set to True for production use
+        batch=True
     )
     return provider.get_tracer(__name__)
 

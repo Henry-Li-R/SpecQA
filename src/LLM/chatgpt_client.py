@@ -29,7 +29,7 @@ class AnswerOutput(BaseModel):
 DEFAULT_SYSTEM_PROMPT = (
     "You answer only using the provided chunks. "
     "If the answer is not directly supported, abstain. "
-    "Citations must include exact quotes from chunks."
+    "Citations must include exact quotes from chunks, without modification (e.g. punctuations). "
 )
 
 
@@ -114,9 +114,10 @@ def validate_citations(
         if not quote:
             errors.append(f"citation {idx} quote not found in chunk")
             continue
-        if quote in chunk_text_by_id.get(chunk_id, ""):
+        trimmed_quote = quote.rstrip(".")
+        if trimmed_quote in chunk_text_by_id.get(chunk_id, ""):
             continue
-        normalized_quote = re.sub(r"\s+", " ", quote).strip()
+        normalized_quote = re.sub(r"\s+", " ", trimmed_quote).strip()
         if normalized_quote not in normalized_chunk_text_by_id.get(chunk_id, ""):
             errors.append(f"citation {idx} quote not found in chunk")
 
