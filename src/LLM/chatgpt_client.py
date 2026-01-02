@@ -28,10 +28,8 @@ class AnswerOutput(BaseModel):
 
 DEFAULT_SYSTEM_PROMPT = (
     "You answer only using the provided chunks. "
-    "If the answer is not directly supported, abstain. "
-    "Citations must include exact quotes from chunks, without modification (e.g. punctuations). "
-    "When citing two disjoint quotes from the same chunk, do not separate them with ellipses and DO NOT OMIT THE TEXT IN BETWEEN; "
-    "instead, cite them as two distinct citations. "
+    "If the answer is not directly supported, abstain. If the chunks only reference another document (e.g., 'For more details, refer to the Acuvim 3 Modbus register map document.'), this counts as missing information → abstain. "
+    "Citations must include exact quotes from chunks, without modification (e.g. punctuations). When citing two disjoint quotes from the same chunk, do not separate them with ellipses and DO NOT OMIT THE TEXT IN BETWEEN; instead, cite them as two distinct citations. "
 )
 
 
