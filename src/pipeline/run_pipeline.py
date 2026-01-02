@@ -16,7 +16,7 @@ COMBINED_CLASS = "DocChunkCombined"
 
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_NAME = "BAAI/bge-reranker-base"
-ALPHA = 0.6
+ALPHA = 0.5
 HYBRID_LIMIT = 20
 RERANK_TOP_K = 20
 TOP_K = 5
@@ -37,7 +37,8 @@ def setup_tracing():
     provider = register(
         project_name=PHOENIX_PROJECT_NAME,
         endpoint=endpoint,
-        batch=True
+        batch=True,
+        auto_instrument=True,
     )
     return provider.get_tracer(__name__)
 

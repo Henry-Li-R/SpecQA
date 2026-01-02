@@ -8,3 +8,13 @@
 {"qid":"g08","query":"Is the Acuvim 3 compatible with Schneider PowerLogic meters?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
 {"qid":"g09","query":"What is the retail price of the Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
 {"qid":"g10","query":"Which Modbus register map addresses 40001-40010?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g11","query":"What ingress protection ratings are listed?","gold_citations":["acuvim_3_datasheet:p4:specifications:25"],"gold_answer_keywords":["IP54","IP30"],"must_abstain":false}
+{"qid":"g12","query":"What is the operating temperature range?","gold_citations":["acuvim_3_datasheet:p4:specifications:23"],"gold_answer_keywords":["-25°C to 70°C","-13°F to 158°F"],"must_abstain":false}
+{"qid":"g13","query":"What environmental standards are listed?","gold_citations":["acuvim_3_datasheet:p4:specifications:23","acuvim_3_datasheet:p4:specifications:24"],"gold_answer_keywords":["IEC 60068-2","CE","RoHS"],"must_abstain":false}
+{"qid":"g14","query":"Which waveform capture and fast logging features are described?","gold_citations":["acuvim_3_datasheet:p2:key_features:7"],"gold_answer_keywords":["COMTRADE","HTTP/FTP","Fast log","CSV"],"must_abstain":false}
+{"qid":"g15","query":"What is the maximum meter sampling rate?","gold_citations":["acuvim_3_datasheet:p1:features:1"],"gold_answer_keywords":["1024","samples/cycle"],"must_abstain":false}
+{"qid":"g16","query":"Which power quality report standards are listed?","gold_citations":["acuvim_3_datasheet:p1:features:2"],"gold_answer_keywords":["EN50160","IEEE519"],"must_abstain":false}
+{"qid":"g17","query":"How do you access the Time/Date settings in the UI?","gold_citations":["acuvim_3_manual:p208:chapter_7_communications:7_6_time_date:644"],"gold_answer_keywords":["Settings","Communication","Time/Date"],"must_abstain":false}
+{"qid":"g18","query":"Does the manual state IRIG-B time sync details?","gold_citations":["acuvim_3_manual:p210:chapter_7_communications:7_6_3_irig_b:654"],"gold_answer_keywords":["IRIG-B"],"must_abstain":false}
+{"qid":"g19","query":"What is the calibration procedure for the meter?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g20","query":"Is the device certified for UL 508A?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}

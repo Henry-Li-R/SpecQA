@@ -30,6 +30,8 @@ DEFAULT_SYSTEM_PROMPT = (
     "You answer only using the provided chunks. "
     "If the answer is not directly supported, abstain. "
     "Citations must include exact quotes from chunks, without modification (e.g. punctuations). "
+    "When citing two disjoint quotes from the same chunk, do not separate them with ellipses and DO NOT OMIT THE TEXT IN BETWEEN; "
+    "instead, cite them as two distinct citations. "
 )
 
 
