@@ -107,7 +107,44 @@ Metrics:
 - answer keyword recall
 - abstain precision/recall
 
-## Notes / decisions
-- Diagram pages are skipped to reduce complexity.
-- Datasheet, manual, and any other documents should use one combined index.
-- Combined index can bias toward longer documents (i.e. manual > datasheet); use doc-type filters or per-doc top‑k if needed.
+
+## Document-Length Bias & Mitigation
+
+### Problem
+In a combined index (e.g., short datasheet + long manual), **long documents dominate retrieval** because they generate many more chunks. This can bury concise, high-signal answers from shorter docs.
+
+---
+
+### Mitigation: retrieval-evidence doc gating (no LLM router)
+
+#### 1. Initial retrieval
+- Retrieve `K0` candidates (e.g., 50–80) from the combined index.
+
+#### 2. Doc-level relevance scoring
+- Group hits by `doc_id`.
+- Compute a doc relevance score using only top evidence:
+
+`doc_score = 0.6 * best_hit + 0.4 * mean(top5_hits)`
+
+This avoids domination by many weak hits from long docs.
+
+#### 3. Soft document selection
+- Always keep the top document.
+- Include a second document only if:
+  - `score2 ≥ 0.9 * score1`, or
+  - `score2 ≥ absolute_threshold` (e.g., 0.2 if normalized).
+
+This preserves recall for cross-doc queries without adding noise.
+
+#### 4. Rerank within selected docs
+- Drop candidates from other docs.
+- Rerank remaining chunks only (cleaner results, lower cost).
+
+---
+
+### Defaults
+- `K0 = 50`
+- Scoring: `0.6 * best + 0.4 * mean(top5)`
+- Include doc2 if `score2 ≥ 0.9 * score1` or `≥ 0.2`
+
+**Note:** This addresses document-length bias. Table-fragmentation issues are handled separately.
