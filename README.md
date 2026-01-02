@@ -108,12 +108,21 @@ Metrics:
 - abstain precision/recall
 
 
+## Table-specific retrieval issues
+Table queries are more failure-prone because:
+- Tables are often split across multiple chunks.
+- Headers and rows may be separated, weakening lexical matches.
+
+A key mitigation (future work) is **table-aware ingestion**, e.g.:
+- Detect tables at ingest time and keep rows/headers together.
+- Use specialized PDF table extraction libraries (e.g., gmft) to convert tables into structured or normalized text chunks before indexing.
+
+
 ## Document-Length Bias & Mitigation
 
 ### Problem
 In a combined index (e.g., short datasheet + long manual), **long documents dominate retrieval** because they generate many more chunks. This can bury concise, high-signal answers from shorter docs.
 
----
 
 ### Mitigation: retrieval-evidence doc gating (no LLM router)
 
@@ -140,11 +149,7 @@ This preserves recall for cross-doc queries without adding noise.
 - Drop candidates from other docs.
 - Rerank remaining chunks only (cleaner results, lower cost).
 
----
-
 ### Defaults
 - `K0 = 50`
 - Scoring: `0.6 * best + 0.4 * mean(top5)`
 - Include doc2 if `score2 ≥ 0.9 * score1` or `≥ 0.2`
-
-**Note:** This addresses document-length bias. Table-fragmentation issues are handled separately.
