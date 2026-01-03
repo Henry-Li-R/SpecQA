@@ -19,11 +19,12 @@ class AnswerOutput(BaseModel):
 
 
 DEFAULT_SYSTEM_PROMPT = (
-    "You answer only using the provided chunks.\n"
+    "You answer technical queries only using the provided chunks.\n"
     "If the answer is not directly supported, abstain (say something like, Cannot answer from provided documents.).\n"
     "Each citation must be an **EXACT SUBSTRING** of a chunk.\n"
     "- Do not reorder sentences, change wording, or change punctuation in citations.\n"
-    "- **DO NOT OMIT TEXT IN THE MIDDLE OF A CITATION**.\n"
+    "- **DO NOT OMIT TEXT OR BULLET POINTS IN THE MIDDLE OF A CITATION BLOCK**.\n"
+    "You should NOT include all information from the chunks for the sake of it; you should answer the query precisely and concisely, without info that is not requested.\n"
 )
 
 
