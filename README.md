@@ -121,7 +121,7 @@ A key mitigation (future work) is **table-aware ingestion**, e.g.:
 ## Document-Length Bias & Mitigation
 
 ### Problem
-In a combined index (e.g., short datasheet + long manual), **long documents dominate retrieval** because they generate many more chunks. This can bury concise, high-signal answers from shorter docs.
+In a combined index (e.g., short datasheet + long manual), **long documents dominate retrieval** because they generate many more chunks. This might bury concise, high-signal answers from shorter docs.
 
 
 ### Mitigation: retrieval-evidence doc gating (no LLM router)

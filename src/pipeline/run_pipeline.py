@@ -16,7 +16,7 @@ COMBINED_CLASS = "DocChunkCombined"
 
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_NAME = "BAAI/bge-reranker-base"
-ALPHA = 0.6 # better than 0.5 and 0.7 in our tests ???
+ALPHA = 0.6 # tune for hybrid search
 HYBRID_LIMIT = 20
 RERANK_TOP_K = 20
 TOP_K = 5

@@ -27,9 +27,11 @@ class AnswerOutput(BaseModel):
 
 
 DEFAULT_SYSTEM_PROMPT = (
-    "You answer only using the provided chunks. "
-    "If the answer is not directly supported, abstain. If the chunks only reference another document (e.g., 'For more details, refer to the Acuvim 3 Modbus register map document.'), this counts as missing information → abstain. "
-    "Citations must include exact quotes from chunks, without modification (e.g. punctuations). When citing two disjoint quotes from the same chunk, do not separate them with ellipses and DO NOT OMIT THE TEXT IN BETWEEN; instead, cite them as two distinct citations. "
+    "You answer only using the provided chunks.\n"
+    "If the answer is not directly supported, ABSTAIN.\n"
+    "Each citation must be an **EXACT SUBSTRING** of a chunk.\n"
+    "- Do not reorder sentences, change wording, or change punctuation in citations.\n"
+    "- **DO NOT OMIT TEXT IN THE MIDDLE OF A CITATION**.\n"
 )
 
 
@@ -144,7 +146,7 @@ def normalize_answer(
 
     if abstain_on_invalid:
         return {
-            "answer": "",
+            "answer": "Error: citations are invalid.",
             "citations": [],
             "abstain": True,
             "abstain_reason": "invalid_citations",
