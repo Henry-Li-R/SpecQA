@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RAG Demo Chat</title>
+    <style>
+      :root {
+        --ink: #1e1c17;
+        --muted: #6a6258;
+        --panel: #fff7ee;
+        --accent: #d86b2d;
+        --accent-dark: #b3531e;
+        --shadow: rgba(30, 28, 23, 0.15);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at top, #fff2dc 0%, #f8ead8 35%, #efe0cf 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 32px 20px;
+      }
+
+      .wrap {
+        width: min(920px, 100%);
+        display: grid;
+        gap: 20px;
+      }
+
+      header {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+
+      h1 {
+        font-size: clamp(24px, 4vw, 36px);
+        margin: 0;
+        letter-spacing: 0.5px;
+      }
+
+      header p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .panel {
+        background: var(--panel);
+        border-radius: 18px;
+        padding: 20px;
+        box-shadow: 0 18px 40px -30px var(--shadow);
+        border: 1px solid rgba(30, 28, 23, 0.08);
+      }
+
+      .input-row {
+        display: grid;
+        gap: 12px;
+      }
+
+      textarea {
+        width: 100%;
+        min-height: 110px;
+        border-radius: 14px;
+        border: 1px solid rgba(30, 28, 23, 0.2);
+        padding: 14px 16px;
+        font-size: 16px;
+        resize: vertical;
+        background: #fffdf9;
+      }
+
+      button {
+        justify-self: start;
+        border: none;
+        background: var(--accent);
+        color: #fff;
+        padding: 10px 18px;
+        border-radius: 999px;
+        font-size: 15px;
+        letter-spacing: 0.3px;
+        cursor: pointer;
+        transition: transform 160ms ease, background 160ms ease;
+      }
+
+      button:hover {
+        background: var(--accent-dark);
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 14px;
+        min-height: 18px;
+      }
+
+      .answer {
+        display: grid;
+        gap: 12px;
+        animation: fadeIn 240ms ease;
+      }
+
+      .answer strong {
+        font-size: 15px;
+      }
+
+      .answer-text {
+        background: #fffaf2;
+        border-radius: 14px;
+        padding: 14px 16px;
+        border: 1px dashed rgba(30, 28, 23, 0.2);
+        line-height: 1.6;
+      }
+
+      .evidence {
+        display: grid;
+        gap: 10px;
+      }
+
+      .evidence-card {
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: #fff8f0;
+        border: 1px solid rgba(30, 28, 23, 0.12);
+      }
+
+      .evidence-card span {
+        display: block;
+        color: var(--muted);
+        font-size: 12px;
+        margin-bottom: 6px;
+      }
+
+      .error {
+        color: #9b2b1b;
+        font-weight: 600;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(8px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <header>
+        <h1>RAG Demo Chat</h1>
+        <p>Ask a question and review the evidence backing the answer.</p>
+      </header>
+
+      <section class="panel input-row">
+        <textarea
+          id="query"
+          placeholder="Ask about the Acuvim 3 Series..."
+        ></textarea>
+        <button id="sendBtn">Ask</button>
+        <div class="status" id="status"></div>
+      </section>
+
+      <section class="panel answer" id="responsePanel" hidden>
+        <strong>Answer</strong>
+        <div class="answer-text" id="answerText"></div>
+        <strong>Evidence</strong>
+        <div class="evidence" id="evidenceList"></div>
+      </section>
+    </main>
+
+    <script>
+      const sendBtn = document.getElementById("sendBtn");
+      const statusEl = document.getElementById("status");
+      const queryEl = document.getElementById("query");
+      const responsePanel = document.getElementById("responsePanel");
+      const answerText = document.getElementById("answerText");
+      const evidenceList = document.getElementById("evidenceList");
+
+      function setStatus(message, isError = false) {
+        statusEl.textContent = message;
+        statusEl.className = isError ? "status error" : "status";
+      }
+
+      function renderEvidence(citations) {
+        evidenceList.innerHTML = "";
+        if (!citations || citations.length === 0) {
+          evidenceList.innerHTML = "<div class=\"evidence-card\">No citations returned.</div>";
+          return;
+        }
+        citations.forEach((item) => {
+          const card = document.createElement("div");
+          card.className = "evidence-card";
+          const meta = document.createElement("span");
+          meta.textContent = `chunk_id: ${item.chunk_id || "unknown"}`;
+          const quote = document.createElement("div");
+          quote.textContent = item.quote || "";
+          card.appendChild(meta);
+          card.appendChild(quote);
+          evidenceList.appendChild(card);
+        });
+      }
+
+      async function sendQuery() {
+        const query = queryEl.value.trim();
+        if (!query) {
+          setStatus("Please enter a question.", true);
+          return;
+        }
+        setStatus("Thinking...");
+        sendBtn.disabled = true;
+        responsePanel.hidden = true;
+
+        try {
+          const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+          });
+          const payload = await response.json();
+          if (!response.ok) {
+            throw new Error(payload.error || "Request failed.");
+          }
+          answerText.textContent = payload.answer || "";
+          renderEvidence(payload.citations || []);
+          responsePanel.hidden = false;
+          setStatus("");
+        } catch (err) {
+          setStatus(err.message || "Something went wrong.", true);
+        } finally {
+          sendBtn.disabled = false;
+        }
+      }
+
+      sendBtn.addEventListener("click", sendQuery);
+      queryEl.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === "Enter") {
+          sendQuery();
+        }
+      });
+    </script>
+  </body>
+</html>

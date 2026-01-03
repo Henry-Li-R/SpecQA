@@ -17,6 +17,8 @@ Minimal, production-compatible RAG demo for Acuvim 3 datasheet + manual.
 - `scripts/` — Weaviate ingestion scripts
 - `src/LLM/` — ChatGPT client + output validation
 - `src/pipeline/` — end-to-end pipeline
+- `src/server/` — minimal HTTP server for the demo UI
+- `static/` — standalone chat UI
 - `tests/` — retrieval + generation eval
 - `weaviate/` — Docker Compose for Weaviate
 
@@ -60,6 +62,21 @@ LLM:
 - Strict JSON schema enforced with `OpenAI().responses.parse`.
 - Validates each citation quote against chunk text (whitespace-normalized).
 - Optional abstain on invalid citations.
+
+## Demo web UI
+The demo UI is a single static HTML page served by a tiny Python HTTP server.
+
+Start the server:
+```bash
+python3 -m src.server.chat_server --port 8000
+```
+
+Then open:
+```
+http://127.0.0.1:8000/
+```
+
+The UI sends POST requests to `/api/chat` and shows the answer plus evidence.
 
 ## Environment variables
 Required:
@@ -120,7 +137,7 @@ A key mitigation (future work) is **table-aware ingestion**, e.g.:
 
 ## Document-Length Bias & Mitigation
 
-### Problem
+### Potential Problem
 In a combined index (e.g., short datasheet + long manual), **long documents dominate retrieval** because they generate many more chunks. This might bury concise, high-signal answers from shorter docs.
 
 

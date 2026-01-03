@@ -1,17 +1,11 @@
 import json
 import os
 import re
-from enum import Enum
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
 from openai import OpenAI
 from pydantic import BaseModel
 from dotenv import load_dotenv
-class Confidence(str, Enum):
-    high = "high"
-    medium = "medium"
-    low = "low"
-
 
 class AnswerCitation(BaseModel):
     chunk_id: str
@@ -22,13 +16,11 @@ class AnswerOutput(BaseModel):
     answer: str
     citations: List[AnswerCitation]
     abstain: bool
-    abstain_reason: str
-    confidence: Optional[Confidence] = None
 
 
 DEFAULT_SYSTEM_PROMPT = (
     "You answer only using the provided chunks.\n"
-    "If the answer is not directly supported, ABSTAIN.\n"
+    "If the answer is not directly supported, abstain (say something like, Cannot answer from provided documents.).\n"
     "Each citation must be an **EXACT SUBSTRING** of a chunk.\n"
     "- Do not reorder sentences, change wording, or change punctuation in citations.\n"
     "- **DO NOT OMIT TEXT IN THE MIDDLE OF A CITATION**.\n"
@@ -135,10 +127,7 @@ def normalize_answer(
         "answer": answer_json.get("answer", ""),
         "citations": answer_json.get("citations", []),
         "abstain": bool(answer_json.get("abstain", False)),
-        "abstain_reason": answer_json.get("abstain_reason", ""),
     }
-    if "confidence" in answer_json:
-        normalized["confidence"] = answer_json.get("confidence")
 
     ok, errors = validate_citations(normalized, retrieved_chunks)
     if ok:
@@ -149,7 +138,6 @@ def normalize_answer(
             "answer": "Error: citations are invalid.",
             "citations": [],
             "abstain": True,
-            "abstain_reason": "invalid_citations",
         }
 
     normalized["validation_errors"] = errors
