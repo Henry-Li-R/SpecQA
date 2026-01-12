@@ -24,6 +24,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
           pip install -r requirements.txt
       - name: Run unit tests
         run: |
@@ -61,6 +62,7 @@ jobs:
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
+          pip install --index-url https://download.pytorch.org/whl/cpu torch
           pip install -r requirements.txt
       - name: Start Weaviate
         run: docker compose -f weaviate/docker-compose.yml up -d
