@@ -54,11 +54,11 @@ class TestChatGPTClient(unittest.TestCase):
             "answer": "Alpha",
             "citations": [{"chunk_id": "c1", "quote": "Zeta"}],
             "abstain": False,
-            "abstain_reason": "",
         }
-        normalized = cc.normalize_answer(answer, chunks, on_invalid="abstain")
+        normalized = cc.normalize_answer(answer, chunks, abstain_on_invalid=True)
         self.assertTrue(normalized["abstain"])
-        self.assertEqual(normalized["abstain_reason"], "invalid_citations")
+        self.assertEqual(normalized["answer"], "Error: citations are invalid.")
+        self.assertEqual(normalized["citations"], [])
 
 
 if __name__ == "__main__":
