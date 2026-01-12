@@ -30,7 +30,6 @@ class TestChatGPTClient(unittest.TestCase):
             "answer": "Alpha",
             "citations": [{"chunk_id": "c1", "quote": "Beta"}],
             "abstain": False,
-            "abstain_reason": "",
         }
         ok, errors = cc.validate_citations(answer, chunks)
         self.assertTrue(ok)
@@ -42,7 +41,6 @@ class TestChatGPTClient(unittest.TestCase):
             "answer": "Alpha",
             "citations": [{"chunk_id": "c1", "quote": "Zeta"}],
             "abstain": False,
-            "abstain_reason": "",
         }
         ok, errors = cc.validate_citations(answer, chunks)
         self.assertFalse(ok)

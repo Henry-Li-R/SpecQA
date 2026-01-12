@@ -27,7 +27,7 @@ class TestPipelineIntegration(unittest.TestCase):
         if result.get("abstain") is False:
             self.assertTrue(result.get("answer"))
             self.assertTrue(result.get("citations"))
-        if result.get("abstain_reason") == "invalid_citations":
+        if "validation_errors" in result:
             print("Validation errors:", result.get("validation_errors"))
 
         print("Pipeline result:", result)

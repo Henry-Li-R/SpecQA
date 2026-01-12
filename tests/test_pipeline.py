@@ -7,7 +7,7 @@ from src.pipeline import run_pipeline as rp
 class TestPipeline(unittest.TestCase):
     def test_run_pipeline_returns_answer(self):
         fake_chunks = [{"chunk_id": "c1", "text": "Alpha"}]
-        fake_answer = {"answer": "Alpha", "citations": [], "abstain": False, "abstain_reason": ""}
+        fake_answer = {"answer": "Alpha", "citations": [], "abstain": False}
 
         with patch.object(rp, "connect_client") as connect_client, \
             patch.object(rp, "retrieve_chunks", return_value=fake_chunks), \
@@ -26,7 +26,7 @@ class TestPipeline(unittest.TestCase):
 
     def test_run_pipeline_passes_chunks_to_llm(self):
         fake_chunks = [{"chunk_id": "c1", "text": "Alpha"}]
-        fake_answer = {"answer": "", "citations": [], "abstain": True, "abstain_reason": "no_support"}
+        fake_answer = {"answer": "", "citations": [], "abstain": True}
 
         with patch.object(rp, "connect_client") as connect_client, \
             patch.object(rp, "retrieve_chunks", return_value=fake_chunks), \
