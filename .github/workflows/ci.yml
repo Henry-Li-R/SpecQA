@@ -7,6 +7,8 @@ on:
 jobs:
   unit-tests:
     runs-on: ubuntu-latest
+    env:
+      PHOENIX_COLLECTOR_ENDPOINT: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -36,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      PHOENIX_COLLECTOR_ENDPOINT: ""
     steps:
       - name: Checkout
         uses: actions/checkout@v4
