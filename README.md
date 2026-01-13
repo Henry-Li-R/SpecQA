@@ -46,6 +46,17 @@ python3 scripts/weaviate_ingest_manual.py
 python3 scripts/weaviate_ingest_combined.py
 ```
 
+AWS S3 ingest (one-off, vectorizes on write; collection must already exist with a vectorizer); ensure the following env settings:
+
+S3_BUCKET=your-bucket
+S3_CHUNKS_KEY=path/to/merged_chunks.jsonl
+WEAVIATE_COLLECTION=collection-name
+WEAVIATE_URL=weaviate-cloud-url
+WEAVIATE_API_KEY=some-api-key
+```
+python3 scripts/weaviate_ingest_s3.py
+```
+
 ## Retrieval + LLM pipeline
 Entry point:
 ```bash

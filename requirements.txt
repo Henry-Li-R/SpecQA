@@ -7,3 +7,4 @@ arize-phoenix
 python-dotenv
 arize-phoenix-otel
 openinference-instrumentation-openai
+boto3
