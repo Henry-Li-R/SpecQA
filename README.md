@@ -26,6 +26,7 @@ Minimal, production-compatible RAG demo for Acuvim 3 datasheet + manual.
 - Datasheet: `src/ingest/chunk_datasheet_pdf.py`
 - Manual: `src/ingest/chunk_manual_pdf.py`
 - Chunks are split to ~500 chars with overlap and a minimum size check.
+- Combined chunks: `src/ingest/data/chunks/merged_chunks.jsonl` (datasheet + manual appended).
 
 ## Weaviate setup
 Docker:
