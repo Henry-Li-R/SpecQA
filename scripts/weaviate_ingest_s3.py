@@ -8,6 +8,7 @@ import boto3
 import weaviate
 from dotenv import load_dotenv
 from weaviate.classes.init import Auth
+from weaviate.classes.config import Configure, DataType, Property
 from weaviate.exceptions import UnexpectedStatusCodeError
 
 
@@ -31,6 +32,28 @@ def connect_client(weaviate_url: str, weaviate_api_key: str | None) -> weaviate.
     return weaviate.connect_to_weaviate_cloud(
         cluster_url=weaviate_url,
         auth_credentials=Auth.api_key(weaviate_api_key),
+    )
+
+
+def ensure_collection(client: weaviate.WeaviateClient, name: str) -> None:
+    if client.collections.exists(name):
+        return
+    client.collections.create(
+        name=name,
+        vector_config=Configure.Vectors.text2vec_openai(
+            source_properties=["search_text"],
+            vectorize_collection_name=False,
+        ),
+        properties=[
+            Property(name="chunk_id", data_type=DataType.TEXT),
+            Property(name="doc_id", data_type=DataType.TEXT),
+            Property(name="doc_type", data_type=DataType.TEXT),
+            Property(name="chapter", data_type=DataType.TEXT),
+            Property(name="section", data_type=DataType.TEXT),
+            Property(name="page", data_type=DataType.INT),
+            Property(name="text", data_type=DataType.TEXT),
+            Property(name="search_text", data_type=DataType.TEXT),
+        ],
     )
 
 
@@ -81,8 +104,7 @@ def main() -> int:
 
     client = connect_client(weaviate_url, weaviate_key)
     try:
-        if not client.collections.exists(collection_name):
-            raise ValueError(f"Weaviate collection not found: {collection_name}")
+        ensure_collection(client, collection_name)
         collection = client.collections.get(collection_name)
         count = 0
         for record in load_jsonl_from_s3(bucket, key):
