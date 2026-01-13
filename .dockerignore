@@ -1,0 +1,14 @@
+.ci-venv
+.DS_Store
+.env
+.git
+.github
+.pytest_cache
+.ruff_cache
+.mypy_cache
+__pycache__
+docs_raw
+tests
+venv
+weaviate
+*.pyc

@@ -27,6 +27,10 @@ class ChatHandler(BaseHTTPRequestHandler):
 
     def do_GET(self) -> None:
         parsed = urlparse(self.path)
+        if parsed.path == "/health":
+            self._set_headers(HTTPStatus.OK, "text/plain; charset=utf-8")
+            self.wfile.write(b"ok")
+            return
         if parsed.path not in ("/", "/chat.html"):
             self._set_headers(HTTPStatus.NOT_FOUND, "text/plain")
             self.wfile.write(b"Not found")
@@ -84,12 +88,27 @@ class ChatHandler(BaseHTTPRequestHandler):
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Demo chat server")
-    parser.add_argument("--host", default=os.environ.get("HOST", "127.0.0.1"))
-    parser.add_argument("--port", type=int, default=int(os.environ.get("PORT", "8000")))
+    parser.add_argument(
+        "--development",
+        action="store_true",
+        help="Use local dev defaults (127.0.0.1:8000).",
+    )
+    parser.add_argument("--host", default=None)
+    parser.add_argument("--port", type=int, default=None)
     args = parser.parse_args()
 
-    httpd = HTTPServer((args.host, args.port), ChatHandler)
-    print(f"Serving on http://{args.host}:{args.port}")
+    if args.development:
+        default_host = "127.0.0.1"
+        default_port = 8000
+    else:
+        default_host = "0.0.0.0"
+        default_port = 8080
+
+    host = args.host or os.environ.get("HOST", default_host)
+    port = args.port or int(os.environ.get("PORT", default_port))
+
+    httpd = HTTPServer((host, port), ChatHandler)
+    print(f"Serving on http://{host}:{port}")
     httpd.serve_forever()
 
 

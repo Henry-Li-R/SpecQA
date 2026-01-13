@@ -69,7 +69,7 @@ The demo UI is a single static HTML page served by a tiny Python HTTP server.
 
 Start the server:
 ```bash
-python3 -m src.server.chat_server --port 8000
+python3 -m src.server.chat_server --development
 ```
 
 Then open:
@@ -78,6 +78,8 @@ http://127.0.0.1:8000/
 ```
 
 The UI sends POST requests to `/api/chat` and shows the answer plus evidence.
+
+Production default binds to `0.0.0.0:8080` (override with `--host`/`--port` or `HOST`/`PORT`).
 
 ## Environment variables
 Required:
