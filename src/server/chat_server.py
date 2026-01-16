@@ -6,10 +6,14 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
+from dotenv import load_dotenv
+
 from src.pipeline.run_pipeline import run_pipeline
 
 STATIC_DIR = Path(__file__).resolve().parents[2] / "static"
 INDEX_FILE = STATIC_DIR / "chat.html"
+
+load_dotenv()
 
 
 class ChatHandler(BaseHTTPRequestHandler):

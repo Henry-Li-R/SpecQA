@@ -5,9 +5,13 @@ from typing import Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 import weaviate
+from dotenv import load_dotenv
+from weaviate.classes.init import Auth
 from sentence_transformers import CrossEncoder, SentenceTransformer
 from phoenix.otel import register
 from src.LLM.chatgpt_client import answer_with_citations
+
+load_dotenv()
 
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL", "http://localhost:8080")
 WEAVIATE_GRPC_PORT = int(os.environ.get("WEAVIATE_GRPC_PORT", "50051"))
@@ -44,8 +48,13 @@ def setup_tracing():
 
 def connect_client() -> weaviate.WeaviateClient:
     parsed = urlparse(WEAVIATE_URL)
-    scheme = parsed.scheme or "http"
     host = parsed.hostname or parsed.path
+    if host and host not in {"localhost", "127.0.0.1"}:
+        return weaviate.connect_to_weaviate_cloud(
+            cluster_url=WEAVIATE_URL,
+            auth_credentials=Auth.api_key(os.environ.get("WEAVIATE_API_KEY")),
+        )
+    scheme = parsed.scheme or "http"
     port = parsed.port or (443 if scheme == "https" else 8080)
     return weaviate.connect_to_custom(
         http_host=host,

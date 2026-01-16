@@ -5,8 +5,11 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import weaviate
+from dotenv import load_dotenv
 from sentence_transformers import SentenceTransformer
 from weaviate.classes.config import Configure, DataType, Property
+
+load_dotenv()
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL", "http://localhost:8080")

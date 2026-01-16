@@ -4,7 +4,10 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 import weaviate
+from dotenv import load_dotenv
 from sentence_transformers import CrossEncoder, SentenceTransformer
+
+load_dotenv()
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 QUERIES_PATH = Path(
