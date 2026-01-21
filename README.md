@@ -92,6 +92,24 @@ The UI sends POST requests to `/api/chat` and shows the answer plus evidence.
 
 Production default binds to `0.0.0.0:8080` (override with `--host`/`--port` or `HOST`/`PORT`).
 
+## Build & push (ECR)
+```bash
+docker buildx build --platform linux/amd64 -t specqa:aws --load .
+
+# 1) Create repo (first time only)
+aws ecr create-repository --repository-name $REPO_NAME --region $AWS_REGION
+
+# 2) Login to ECR
+aws ecr get-login-password --region $AWS_REGION | \
+  docker login --username AWS --password-stdin ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com
+
+# 3) Tag local image
+docker tag specqa:${IMAGE_TAG} ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${IMAGE_TAG}
+
+# 4) Push
+docker push ${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com/${REPO_NAME}:${IMAGE_TAG}
+```
+
 ## Environment variables
 Required:
 - `OPENAI_API_KEY`
