@@ -8,6 +8,8 @@ jobs:
   unit-tests:
     runs-on: ubuntu-latest
     env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      WEAVIATE_API_KEY: ${{ secrets.WEAVIATE_API_KEY }}
       S3_BUCKET: ${{ vars.S3_BUCKET }}
       S3_CHUNKS_KEY: ${{ vars.S3_CHUNKS_KEY }}
       WEAVIATE_COLLECTION: ${{ vars.WEAVIATE_COLLECTION }}
@@ -41,6 +43,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      WEAVIATE_API_KEY: ${{ secrets.WEAVIATE_API_KEY }}
       S3_BUCKET: ${{ vars.S3_BUCKET }}
       S3_CHUNKS_KEY: ${{ vars.S3_CHUNKS_KEY }}
       WEAVIATE_COLLECTION: ${{ vars.WEAVIATE_COLLECTION }}
