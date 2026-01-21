@@ -6,6 +6,7 @@ from urllib.parse import urlparse
 import weaviate
 from dotenv import load_dotenv
 from sentence_transformers import CrossEncoder, SentenceTransformer
+from weaviate.classes.init import Auth
 
 load_dotenv()
 
@@ -31,8 +32,14 @@ print(f"Rerank enabled: {RERANK_ENABLED}")
 
 def connect_client() -> weaviate.WeaviateClient:
     parsed = urlparse(WEAVIATE_URL)
-    scheme = parsed.scheme or "http"
     host = parsed.hostname or parsed.path
+    if host and host not in {"localhost", "127.0.0.1"}:
+        return weaviate.connect_to_weaviate_cloud(
+            cluster_url=WEAVIATE_URL,
+            auth_credentials=Auth.api_key(os.environ.get("WEAVIATE_API_KEY")),
+            headers={"X-OpenAI-Api-Key": os.environ.get("OPENAI_API_KEY")},
+        )
+    scheme = parsed.scheme or "http"
     port = parsed.port or (443 if scheme == "https" else 8080)
     return weaviate.connect_to_custom(
         http_host=host,

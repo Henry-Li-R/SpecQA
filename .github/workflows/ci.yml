@@ -80,7 +80,7 @@ jobs:
           done
           echo "Weaviate did not become ready in time."
           exit 1
-      - name: Ingest test data
-        run: python3 scripts/weaviate_ingest_combined.py
+      # - name: Ingest test data # weaviate_ingest_combined.py not used for aws branch
+      #   run: python3 scripts/weaviate_ingest_combined.py
       - name: Run integration tests
         run: python3 -m unittest tests/test_pipeline_integration.py
