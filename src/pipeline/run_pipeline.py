@@ -16,7 +16,7 @@ load_dotenv()
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL", "http://localhost:8080")
 WEAVIATE_GRPC_PORT = int(os.environ.get("WEAVIATE_GRPC_PORT", "50051"))
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-COMBINED_CLASS = "DocChunkCombined"
+COMBINED_CLASS = "SpecQAChunks"
 
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_NAME = "BAAI/bge-reranker-base"
@@ -33,7 +33,7 @@ PHOENIX_COLLECTOR_ENDPOINT = os.environ.get(
 PHOENIX_PROJECT_NAME = os.environ.get("PHOENIX_PROJECT_NAME", "rag-demo")
 
 def setup_tracing():
-    if not PHOENIX_COLLECTOR_ENDPOINT:
+    if not PHOENIX_COLLECTOR_ENDPOINT.rstrip():
         return None
     endpoint = PHOENIX_COLLECTOR_ENDPOINT.rstrip("/")
     if "/v1/traces" not in endpoint:
@@ -53,6 +53,7 @@ def connect_client() -> weaviate.WeaviateClient:
         return weaviate.connect_to_weaviate_cloud(
             cluster_url=WEAVIATE_URL,
             auth_credentials=Auth.api_key(os.environ.get("WEAVIATE_API_KEY")),
+            headers={"X-OpenAI-Api-Key": os.environ.get("OPENAI_API_KEY")},
         )
     scheme = parsed.scheme or "http"
     port = parsed.port or (443 if scheme == "https" else 8080)

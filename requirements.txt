@@ -8,3 +8,4 @@ python-dotenv
 arize-phoenix-otel
 openinference-instrumentation-openai
 boto3
+botocore[crt]

@@ -20,7 +20,7 @@ MERGED_PATH = Path(
         (REPO_ROOT / "src/ingest/data/chunks/merged_chunks.jsonl").as_posix(),
     )
 )
-CLASS_NAME = "DocChunkCombined"
+CLASS_NAME = "SpecQAChunks"
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 
 

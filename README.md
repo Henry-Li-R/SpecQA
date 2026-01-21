@@ -37,7 +37,7 @@ docker compose -f weaviate/docker-compose.yml up -d
 Collections:
 - `DocChunkDatasheet` (datasheet only)
 - `DocChunkManual` (manual only)
-- `DocChunkCombined` (both docs, with `doc_type`)
+- `SpecQAChunks` (both docs, with `doc_type`)
 
 ### Ingest
 ```bash

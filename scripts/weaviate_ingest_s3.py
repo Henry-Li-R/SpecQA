@@ -32,6 +32,7 @@ def connect_client(weaviate_url: str, weaviate_api_key: str | None) -> weaviate.
     return weaviate.connect_to_weaviate_cloud(
         cluster_url=weaviate_url,
         auth_credentials=Auth.api_key(weaviate_api_key),
+        headers={"X-OpenAI-Api-Key": os.environ.get("OPENAI_API_KEY")},
     )
 
 
@@ -85,14 +86,16 @@ def upsert_object(collection, record: dict) -> None:
     chunk_id = record["chunk_id"]
     obj_id = uuid.uuid5(uuid.NAMESPACE_URL, chunk_id)
     props = build_properties(record)
-    if collection.data.exists(obj_id):
-        collection.data.replace(uuid=obj_id, properties=props)
-    else:
-        try:
-            collection.data.insert(properties=props, uuid=obj_id)
-        except UnexpectedStatusCodeError:
+    try:
+        collection.data.insert(properties=props, uuid=obj_id)
+        return
+    except UnexpectedStatusCodeError as e:
+        # Only do replace when the failure is "already exists" (conflict).
+        status = getattr(e, "status_code", None)
+        if status == 409:
             collection.data.replace(uuid=obj_id, properties=props)
-
+            return
+        raise
 
 def main() -> int:
     load_dotenv()
