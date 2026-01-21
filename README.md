@@ -123,10 +123,10 @@ Optional:
 Use `.env` for local development (loaded via `python-dotenv`).
 
 ## GitHub Actions CI
-Repo/environment variables and secrets are not automatically exported as shell env vars.
-If CI needs them (e.g., `OPENAI_API_KEY`), pass them explicitly in `.github/workflows/ci.yml`
-via `env:` (job/step), `with:`, or inline `run` arguments, using `${{ vars.NAME }}` or
-`${{ secrets.NAME }}`.
+Set repo/environment vars and secrets in the GitHub Actions UI (repo settings).
+They are not auto-exported as shell env vars, so if CI needs them (e.g., `OPENAI_API_KEY`),
+pass them explicitly in `.github/workflows/ci.yml` via `env:` (job/step), `with:`, or
+inline `run` arguments, using `${{ vars.NAME }}` or `${{ secrets.NAME }}`.
 
 ## Phoenix tracing (Arize)
 Start Phoenix separately:
