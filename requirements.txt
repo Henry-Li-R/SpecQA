@@ -7,3 +7,7 @@ arize-phoenix
 python-dotenv
 arize-phoenix-otel
 openinference-instrumentation-openai
+fastapi
+uvicorn[standard]
+slowapi
+tiktoken

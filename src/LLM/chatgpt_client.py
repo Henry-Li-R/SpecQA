@@ -3,9 +3,17 @@ import os
 import re
 from typing import Any, Dict, Iterable, List, Optional, Tuple
 
+import tiktoken
 from openai import OpenAI
 from pydantic import BaseModel
 from dotenv import load_dotenv
+
+MAX_INPUT_TOKENS = int(os.environ.get("CHAT_MAX_INPUT_TOKENS", "12000"))
+OPENAI_TIMEOUT_S = float(os.environ.get("CHAT_OPENAI_TIMEOUT_S", "60"))
+
+
+class InputTooLargeError(ValueError):
+    """Raised when the token count of the input exceeds MAX_INPUT_TOKENS."""
 
 class AnswerCitation(BaseModel):
     chunk_id: str
@@ -65,18 +73,37 @@ def build_messages(
     return messages
 
 
+def _count_tokens(messages: List[Dict[str, str]], model: str) -> int:
+    try:
+        enc = tiktoken.encoding_for_model(model)
+    except KeyError:
+        enc = tiktoken.get_encoding("cl100k_base")
+    total = 0
+    for msg in messages:
+        total += 4  # per-message overhead
+        for value in msg.values():
+            total += len(enc.encode(value))
+    return total
+
+
 def send_chatgpt_request(
     messages: List[Dict[str, str]],
     model: str = "gpt-4o-2024-08-06",
     api_key: Optional[str] = None,
     temperature: float = 0.0,
 ) -> AnswerOutput:
+    input_tokens = _count_tokens(messages, model)
+    if input_tokens > MAX_INPUT_TOKENS:
+        raise InputTooLargeError(
+            f"Input is {input_tokens} tokens, exceeds limit of {MAX_INPUT_TOKENS}."
+        )
+
     load_dotenv()
     key = api_key or os.environ.get("OPENAI_API_KEY", "")
     if not key:
         raise ValueError("Missing OPENAI_API_KEY or api_key argument.")
 
-    client = OpenAI(api_key=key)
+    client = OpenAI(api_key=key, timeout=OPENAI_TIMEOUT_S)
     resp = client.responses.parse(
         model=model,
         input=messages,

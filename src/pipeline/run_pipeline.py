@@ -1,13 +1,16 @@
 import argparse
 import os
 from contextlib import nullcontext
-from typing import Any, Dict, List, Optional, Tuple
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Tuple
 from urllib.parse import urlparse
 
 import weaviate
 from sentence_transformers import CrossEncoder, SentenceTransformer
 from phoenix.otel import register
 from src.LLM.chatgpt_client import answer_with_citations
+
+if TYPE_CHECKING:
+    from src.pipeline.resources import PipelineResources
 
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL", "http://localhost:8080")
 WEAVIATE_GRPC_PORT = int(os.environ.get("WEAVIATE_GRPC_PORT", "50051"))
@@ -132,14 +135,29 @@ def run_pipeline(
     chat_history: Optional[List[Dict[str, str]]] = None,
     api_key: Optional[str] = None,
     abstain_on_invalid: bool = False,
+    resources: Optional["PipelineResources"] = None,
 ) -> Dict[str, Any]:
-    tracer = setup_tracing()
-    client = connect_client()
-    try:
+    """Run the RAG pipeline.
+
+    If `resources` is provided (server path), the shared embedder/reranker/
+    Weaviate client/tracer are reused and not closed here. If omitted (CLI
+    and unit-test path), a one-shot client is opened and closed in `finally`.
+    """
+    if resources is not None:
+        tracer = resources.tracer
+        client = resources.weaviate_client
+        embedder = resources.embedder
+        reranker = resources.reranker
+        owns_client = False
+    else:
+        tracer = setup_tracing()
+        client = connect_client()
         embedder = SentenceTransformer(MODEL_NAME)
         embedder.max_seq_length = 512
         reranker = CrossEncoder(RERANK_MODEL_NAME) if RERANK_ENABLED else None
+        owns_client = True
 
+    try:
         collection = client.collections.get(COMBINED_CLASS)
         chunks = retrieve_chunks(collection, query, embedder, reranker, tracer=tracer)
         llm_ctx = (
@@ -158,4 +176,5 @@ def run_pipeline(
                 abstain_on_invalid=abstain_on_invalid,
             )
     finally:
-        client.close()
+        if owns_client:
+            client.close()

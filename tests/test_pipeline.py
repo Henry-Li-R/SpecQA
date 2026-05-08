@@ -42,5 +42,38 @@ class TestPipeline(unittest.TestCase):
         self.assertEqual(kwargs["retrieved_chunks"], fake_chunks)
 
 
+    def test_run_pipeline_uses_injected_resources(self):
+        """When resources= is provided, no new client/models are instantiated."""
+        from src.pipeline.resources import PipelineResources
+
+        fake_chunks = [{"chunk_id": "c1", "text": "Alpha"}]
+        fake_answer = {"answer": "Alpha", "citations": [], "abstain": False}
+
+        mock_client = MagicMock()
+        mock_embedder = MagicMock()
+        mock_reranker = MagicMock()
+        resources = PipelineResources(
+            embedder=mock_embedder,
+            reranker=mock_reranker,
+            weaviate_client=mock_client,
+            tracer=None,
+        )
+
+        with patch.object(rp, "connect_client") as connect_client, \
+            patch.object(rp, "SentenceTransformer") as embedder_cls, \
+            patch.object(rp, "CrossEncoder") as reranker_cls, \
+            patch.object(rp, "retrieve_chunks", return_value=fake_chunks), \
+            patch.object(rp, "answer_with_citations", return_value=fake_answer):
+
+            result = rp.run_pipeline("test query", resources=resources)
+
+            connect_client.assert_not_called()
+            embedder_cls.assert_not_called()
+            reranker_cls.assert_not_called()
+            mock_client.close.assert_not_called()
+
+        self.assertEqual(result["answer"], "Alpha")
+
+
 if __name__ == "__main__":
     unittest.main()

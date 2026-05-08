@@ -25,7 +25,7 @@ python3 scripts/weaviate_ingest_manual.py     # manual only → DocChunkManual
 python3 src/pipeline/run_pipeline.py "What is the voltage measurement range?"
 
 # Start dev server (localhost:8000)
-python3 -m src.server.chat_server --development
+python3 -m src.server.chat_server
 
 # Unit tests (no Weaviate or network needed)
 python3 -m unittest tests/test_chatgpt_client.py tests/test_pipeline.py
