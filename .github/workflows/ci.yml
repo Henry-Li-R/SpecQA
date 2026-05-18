@@ -32,12 +32,16 @@ jobs:
         run: |
           python3 -m unittest \
             tests/test_chatgpt_client.py \
-            tests/test_pipeline.py
+            tests/test_pipeline.py \
+            tests/test_run_eval_orchestration.py
 
-  integration-tests:
+  integration-and-eval:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     env:
       OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      WEAVIATE_URL: http://localhost:8080
+      WEAVIATE_GRPC_PORT: "50051"
       PHOENIX_COLLECTOR_ENDPOINT: ""
     steps:
       - name: Checkout
@@ -84,3 +88,11 @@ jobs:
         run: python3 scripts/weaviate_ingest_combined.py
       - name: Run integration tests
         run: python3 -m unittest tests/test_pipeline_integration.py
+      - name: Run eval
+        run: make eval
+      - name: Upload eval results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results-${{ github.sha }}
+          path: eval/results/

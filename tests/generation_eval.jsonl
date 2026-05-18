@@ -18,3 +18,16 @@
 {"qid":"g18","query":"Does the manual state IRIG-B time sync details?","gold_citations":["acuvim_3_manual:p210:chapter_7_communications:7_6_3_irig_b:654","acuvim_3_manual:p208:chapter_7_communications:7_6_time_date:644","acuvim_3_manual:p208:chapter_7_communications:7_6_time_date:645","acuvim_3_manual:p12:chapter_1_introduction:1_1_3_synchrophasor:76"],"gold_answer_keywords":["IRIG-B"],"must_abstain":false}
 {"qid":"g19","query":"What is the calibration procedure for the meter?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
 {"qid":"g20","query":"Is the device certified for UL 508A?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g21","query":"What is the power factor accuracy and resolution stated in the specifications?","gold_citations":["acuvim_3_datasheet:p3:specifications:15"],"gold_answer_keywords":["0.1%","0.001"],"must_abstain":false}
+{"qid":"g22","query":"What is the harmonic measurement accuracy and update rate?","gold_citations":["acuvim_3_manual:p14:chapter_1_introduction:1_3_accuracy:83","acuvim_3_manual:p14:chapter_1_introduction:1_3_accuracy:84"],"gold_answer_keywords":["0.15%","200ms"],"must_abstain":false}
+{"qid":"g23","query":"What current sensing input types are supported and what are their metering ranges?","gold_citations":["acuvim_3_datasheet:p1:features:3","acuvim_3_datasheet:p3:specifications:17"],"gold_answer_keywords":["5A","333mV"],"must_abstain":false}
+{"qid":"g24","query":"What is the recommended recalibration interval for the Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g25","query":"What is the MTBF (mean time between failures) specification for the Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g26","query":"How does the Acuvim 3 compare to the Siemens SENTRON PAC3200 in terms of accuracy and protocol support?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g27","query":"Where can I purchase replacement fuses for the Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g28","query":"Does the Acuvim 3 support PROFIBUS DP communication?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g29","query":"Is WirelessHART communication supported by the Acuvim 3?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g30","query":"How much does the Acuvim 3's measurement accuracy degrade after five years of continuous operation?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g31","query":"What is the expected operational lifespan of the Acuvim 3 in years?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g32","query":"Can the Acuvim 3 log data to an external SD card or USB drive?","gold_citations":[],"gold_answer_keywords":[],"must_abstain":true}
+{"qid":"g33","query":"What is the storage temperature range for the Acuvim 3?","gold_citations":["acuvim_3_datasheet:p4:specifications:23","acuvim_3_manual:p17:chapter_2_hardware_installation:2_2_installation_methods:95"],"gold_answer_keywords":["-40°C"],"must_abstain":false}

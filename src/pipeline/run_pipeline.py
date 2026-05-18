@@ -14,8 +14,9 @@ if TYPE_CHECKING:
 
 WEAVIATE_URL = os.environ.get("WEAVIATE_URL", "http://localhost:8080")
 WEAVIATE_GRPC_PORT = int(os.environ.get("WEAVIATE_GRPC_PORT", "50051"))
+WEAVIATE_API_KEY = os.environ.get("WEAVIATE_API_KEY", "")
 os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")
-COMBINED_CLASS = "DocChunkCombined"
+COMBINED_CLASS = os.environ.get("WEAVIATE_COLLECTION", "SpecQAChunks")
 
 MODEL_NAME = "BAAI/bge-small-en-v1.5"
 RERANK_MODEL_NAME = "BAAI/bge-reranker-base"
@@ -47,9 +48,16 @@ def setup_tracing():
 
 def connect_client() -> weaviate.WeaviateClient:
     parsed = urlparse(WEAVIATE_URL)
-    scheme = parsed.scheme or "http"
+    if not parsed.scheme:
+        auth = weaviate.auth.AuthApiKey(api_key=WEAVIATE_API_KEY) if WEAVIATE_API_KEY else None
+        return weaviate.connect_to_weaviate_cloud(
+            cluster_url=WEAVIATE_URL,
+            auth_credentials=auth,
+        )
+    scheme = parsed.scheme
     host = parsed.hostname or parsed.path
     port = parsed.port or (443 if scheme == "https" else 8080)
+    auth = weaviate.auth.AuthApiKey(api_key=WEAVIATE_API_KEY) if WEAVIATE_API_KEY else None
     return weaviate.connect_to_custom(
         http_host=host,
         http_port=port,
@@ -57,6 +65,7 @@ def connect_client() -> weaviate.WeaviateClient:
         grpc_host=host,
         grpc_port=WEAVIATE_GRPC_PORT,
         grpc_secure=(scheme == "https"),
+        auth_credentials=auth,
     )
 
 

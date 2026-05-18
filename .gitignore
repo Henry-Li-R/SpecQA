@@ -2,6 +2,7 @@
 .env
 .env.*
 !.env.example
+!.env.development.example
 
 # python
 .ci-venv/
@@ -15,3 +16,6 @@ __pycache__/
 
 # data/artifacts
 docs_raw/
+
+# eval results (timestamped JSONs; tracked via eval/results/.gitkeep)
+eval/results/*.json

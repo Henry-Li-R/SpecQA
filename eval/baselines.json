@@ -1,0 +1,16 @@
+{
+  "_note": "Update via: make update-baselines",
+  "tolerance": 0.05,
+  "retrieval_datasheet": {
+    "recall_at_5": 0.8333
+  },
+  "retrieval_manual": {
+    "recall_at_5": 0.9368
+  },
+  "generation": {
+    "citation_quote_validity": 0.9545,
+    "answer_keyword_recall": 0.8148,
+    "abstain_recall": 0.7333,
+    "abstain_precision": 1.0
+  }
+}
